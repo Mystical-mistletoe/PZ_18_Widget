@@ -5,16 +5,21 @@
     android:background="#09C"
     android:theme="@style/Theme.PZ_18_Widget.AppWidgetContainer">
 
+    <ImageView
+        android:id="@+id/weather_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
     <TextView
-        android:id="@+id/appwidget_text"
+        android:id="@+id/details_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/weather_icon"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:text="@string/widget_text"
+        android:layout_marginTop="2dp"
+        android:text="0.00 °C"
         android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:textSize="16sp" />
 </RelativeLayout>
