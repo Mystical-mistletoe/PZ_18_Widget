@@ -11,4 +11,11 @@
     <color name="light_blue_200">#FF81D4FA</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
+
+    <color name="bg_top">#2E1A47</color>
+    <color name="bg_bottom">#FF6C5B</color>
+    <color name="card">#33FFFFFF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="accent">#FFB86C</color>
 </resources>

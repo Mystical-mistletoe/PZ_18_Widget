@@ -1,9 +1,11 @@
 package com.example.pz_18_widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -55,11 +57,25 @@ public class AppWidget extends AppWidgetProvider {
 
     static void updateAppWidget(final Context context, SharedPreferences sharedPreferences,
                                 AppWidgetManager appWidgetManager, final int appWidgetId) {
-        // Читаем параметры Preferences
+        // город из настроек конкретного экземпляра виджета
         String widgetCity = sharedPreferences.getString(ConfigActivity.WIDGET_CITY + appWidgetId, null);
         if (widgetCity == null) return;
 
         final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.app_widget);
+
+        // intent на открытие конфигурационного экрана для ЭТОГО экземпляра виджета
+        Intent editIntent = new Intent(context, ConfigActivity.class);
+        editIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                appWidgetId,
+                editIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        //обработчик нажатия на поле с городом
+        remoteViews.setOnClickPendingIntent(R.id.city_field, pendingIntent);
+
         remoteViews.setTextViewText(R.id.city_field, widgetCity);
 
         new ConnectFetch(context, widgetCity, new ConnectFetch.OnConnectionCompleteListener() {
@@ -67,13 +83,12 @@ public class AppWidget extends AppWidgetProvider {
             public void onSuccess(JSONObject response) {
                 renderWeather(response, context, remoteViews, appWidgetId);
             }
-
             @Override
-            public void onFail(String message) {
-            }
+            public void onFail(String message) { }
         });
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }
+
 
     public static void renderWeather(JSONObject json, Context context, RemoteViews remoteViews, int appWidgetId) {
         try {

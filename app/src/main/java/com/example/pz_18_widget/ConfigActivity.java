@@ -35,14 +35,19 @@ public class ConfigActivity extends AppCompatActivity {
         setContentView(R.layout.activity_config);
     }
     public void setCity(View view) {
-        EditText etText = (EditText) findViewById(R.id.city); // Записываем значения с экрана в Preferences
+        EditText etText = (EditText) findViewById(R.id.city);
+        // запись значения с экрана
         SharedPreferences sp = getSharedPreferences(WIDGET_PREF, MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(WIDGET_CITY + widgetID, etText.getText().toString());
         editor.apply();
+
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        AppWidget.updateAppWidget(this, sp, appWidgetManager, widgetID); // положительный ответ
+        AppWidget.updateAppWidget(this, sp, appWidgetManager, widgetID);
+
+        // Положительный ответ и закрытие экрана
         setResult(RESULT_OK, resultValue);
         finish();
     }
+
 }
