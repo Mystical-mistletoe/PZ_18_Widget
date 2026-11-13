@@ -3,9 +3,10 @@
     android:initialKeyguardLayout="@layout/app_widget"
     android:initialLayout="@layout/app_widget"
     android:minWidth="110dp"
-    android:minHeight="40dp"
+    android:minHeight="80dp"
     android:previewImage="@android:drawable/arrow_down_float"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="2400000"
-    android:widgetCategory="home_screen">
+    android:widgetCategory="home_screen"
+    android:configure="com.example.pz_18_widget.ConfigActivity">
 </appwidget-provider>

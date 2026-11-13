@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -22,17 +23,24 @@ public class AppWidget extends AppWidgetProvider {
     final String LOG_TAG = "myLogs";
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appwidgetIds) {
-        for (int appwidgetId : appwidgetIds) {
-            updateAppWidget(context, appWidgetManager, appwidgetId);
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        SharedPreferences sp = context.getSharedPreferences(ConfigActivity.WIDGET_PREF, Context.MODE_PRIVATE);
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, sp, appWidgetManager, appWidgetId);
         }
-        Log.d(LOG_TAG, "onUpdate " + Arrays.toString(appwidgetIds));
+        Log.d(LOG_TAG, "onUpdate " + Arrays.toString(appWidgetIds));
     }
 
     @Override
-    public void onDeleted(Context context, int[] appwidgetIds) {
-        super.onDeleted(context, appwidgetIds);
-        Log.d(LOG_TAG, "onDeleted " + Arrays.toString(appwidgetIds));
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
+        SharedPreferences.Editor editor = context.getSharedPreferences(ConfigActivity.WIDGET_PREF,
+                Context.MODE_PRIVATE).edit();
+        for (int widgetID : appWidgetIds) {
+            editor.remove(ConfigActivity.WIDGET_CITY + widgetID);
+        }
+        editor.apply();
+        Log.d(LOG_TAG, "onDeleted " + Arrays.toString(appWidgetIds));
     }
 
     @Override
@@ -45,10 +53,16 @@ public class AppWidget extends AppWidgetProvider {
         Log.d(LOG_TAG, "onDisabled");
     }
 
-    static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager, final int appWidgetId) {
-        final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.app_widget);
+    static void updateAppWidget(final Context context, SharedPreferences sharedPreferences,
+                                AppWidgetManager appWidgetManager, final int appWidgetId) {
+        // Читаем параметры Preferences
+        String widgetCity = sharedPreferences.getString(ConfigActivity.WIDGET_CITY + appWidgetId, null);
+        if (widgetCity == null) return;
 
-        new ConnectFetch(context, "Orenburg", new ConnectFetch.OnConnectionCompleteListener() {
+        final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.app_widget);
+        remoteViews.setTextViewText(R.id.city_field, widgetCity);
+
+        new ConnectFetch(context, widgetCity, new ConnectFetch.OnConnectionCompleteListener() {
             @Override
             public void onSuccess(JSONObject response) {
                 renderWeather(response, context, remoteViews, appWidgetId);
