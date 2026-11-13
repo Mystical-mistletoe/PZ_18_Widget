@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setInfo();
     }
 
-    private void setCity(View view) {
+    public void setCity(View view) {
         showInputDialog();
     }
 
